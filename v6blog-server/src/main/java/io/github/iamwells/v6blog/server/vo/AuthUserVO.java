@@ -1,6 +1,8 @@
 package io.github.iamwells.v6blog.server.vo;
 
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -19,13 +21,15 @@ public class AuthUserVO implements Serializable {
     /**
      * 用户名
      */
-    @NotNull(message = "用户名不能为空")
+    @NotEmpty(message = "用户名不能为空")
+    @Size(max = 32, min = 2)
     private String username;
 
     /**
      * 密码
      */
-    @NotNull(message = "密码不能为空")
+    @NotEmpty(message = "密码不能为空")
+    @Size(max = 64, min = 4)
     private String password;
 
     /**

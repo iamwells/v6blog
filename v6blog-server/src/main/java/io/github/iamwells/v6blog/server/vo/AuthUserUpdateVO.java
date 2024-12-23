@@ -13,11 +13,4 @@ import java.io.Serializable;
 public class AuthUserUpdateVO extends AuthUserVO implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @Override
-    public void setPassword(String password) {
-        if (StringUtils.hasText(password)) {
-            String encryptPassword = BCrypt.hashpw(password, BCrypt.gensalt());
-            super.setPassword(encryptPassword);
-        }
-    }
 }

@@ -1,6 +1,6 @@
 server:
   # 端口
-  port: 8080
+  port: 8081
 
 ############## Sa-Token 配置 (文档: https://sa-token.cc) ##############
 sa-token:
@@ -45,6 +45,10 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+
   # json配置
   jackson:
     default-property-inclusion: non_null
