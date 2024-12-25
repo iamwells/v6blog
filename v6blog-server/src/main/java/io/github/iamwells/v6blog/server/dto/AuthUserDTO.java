@@ -55,7 +55,7 @@ public class AuthUserDTO implements Serializable {
     /**
      * 民族（中国名族代码，参照名族代码）
      */
-    private Integer ethnicity;
+    private String ethnicity;
 
 
     /**
