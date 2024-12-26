@@ -2,26 +2,23 @@ package io.github.iamwells.v6blog.server.controller;
 
 import cn.dev33.satoken.SaManager;
 import cn.dev33.satoken.annotation.SaCheckLogin;
-import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.config.SaCookieConfig;
 import cn.dev33.satoken.config.SaTokenConfig;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaResult;
-import io.github.iamwells.v6blog.server.dto.AuthUserDTO;
+import io.github.iamwells.v6blog.server.dto.AuthUserLoginDTO;
 import io.github.iamwells.v6blog.server.service.AuthUserService;
-import io.github.iamwells.v6blog.server.vo.AuthUserLoginVo;
-import io.github.iamwells.v6blog.server.vo.AuthUserQueryVO;
-import io.github.iamwells.v6blog.server.vo.AuthUserUpdateVO;
-import io.github.iamwells.v6blog.server.vo.AuthUserVO;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 
@@ -37,76 +34,17 @@ public class AuthUserController {
     private AuthUserService authUserService;
 
     /**
-     * 保存用户信息
-     *
-     * @param vO 用户信息对象，包含需保存的用户数据
-     * @return 返回保存操作的结果，通常是一个标识操作成功的字符串
-     */
-    @PostMapping
-    public String save(@Valid @RequestBody AuthUserVO vO) {
-        return authUserService.save(vO).toString();
-    }
-
-    /**
-     * 删除用户信息
-     *
-     * @param id 需要删除的用户ID
-     */
-    @DeleteMapping("/{id}")
-    @SaCheckPermission(value = "USER_DELETE", orRole = "ROLE_SUPER")
-    public void delete(@Valid @NotNull @PathVariable("id") Long id) {
-        authUserService.delete(id);
-    }
-
-    /**
-     * 更新用户信息
-     *
-     * @param id 需要更新的用户ID
-     * @param vO 包含更新信息的用户对象
-     */
-    @PutMapping("/{id}")
-    @SaCheckPermission(value = "USER_UPDATE", orRole = "ROLE_SUPER")
-    public void update(@Valid @NotNull @PathVariable("id") Long id,
-                       @NotNull @RequestBody AuthUserUpdateVO vO) {
-        authUserService.update(id, vO);
-    }
-
-    /**
-     * 根据用户ID获取用户信息
-     *
-     * @param id 需要查询的用户ID
-     * @return 返回查询到的用户信息对象
-     */
-    @GetMapping("/{id}")
-    @SaCheckPermission(value = "USER_QUERY", orRole = "ROLE_SUPER")
-    public AuthUserDTO getById(@Valid @NotNull @PathVariable("id") Long id) {
-        return authUserService.getById(id);
-    }
-
-    /**
-     * 查询用户列表
-     *
-     * @param vO 包含查询条件的用户对象
-     * @return 返回查询到的用户信息列表，以分页形式返回
-     */
-    @GetMapping
-    @SaCheckPermission(value = "USER_QUERY", orRole = "ROLE_SUPER")
-    public Page<AuthUserDTO> query(@Valid AuthUserQueryVO vO) {
-        return authUserService.query(vO);
-    }
-
-    /**
      * 用户登录
      *
-     * @param vO 包含用户登录信息的对象
+     * @param dto 包含用户登录信息的对象
      * @return 返回登录结果，包括成功或错误信息
      */
     @PostMapping("/login")
-    public SaResult login(@Valid @NotNull @RequestBody AuthUserLoginVo vO) {
+    public SaResult login(@Valid @NotNull @RequestBody AuthUserLoginDTO dto) {
         // 创建一个HashMap来存储登录结果，包括生成的token
         HashMap<String, String> result = new HashMap<>();
         // 调用业务服务方法执行用户登录，并将返回的token存入结果中
-        result.put("token", authUserService.doLogin(vO));
+        result.put("token", authUserService.doLogin(dto));
         // 返回包含登录结果的SaResult对象
         return SaResult.data(result);
     }
