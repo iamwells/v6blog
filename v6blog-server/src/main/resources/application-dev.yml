@@ -18,27 +18,46 @@ sa-token:
   token-style: uuid
   # 是否输出操作日志
   is-log: true
+  # Sa-Token redis 配置
+  alone-redis:
+    host:
+    port: 6379
+    username: v6blog
+    password:
+    database: 0
+    lettuce:
+      pool:
+        max-active: 5
+        max-idle: 5
+        min-idle: 2
 
 
 spring:
   # 数据源
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://xxx:5432/v6blog
+    url: jdbc:postgresql://xxxx:5432/v6blog
     username: v6blog
     password:
     # 数据库连接池
     hikari:
       pool-name: v6blog-pool
-      maximum-pool-size: 17
-      minimum-idle: 17
-    # redis
+      maximum-pool-size: 5
+      minimum-idle: 2
+    # 业务redis配置
   data:
     redis:
-      host: xxx
+      host:
       port: 6379
       username: v6blog
       password:
+      database: 1
+      lettuce:
+        pool:
+          max-active: 5
+          max-idle: 5
+          min-idle: 2
+
   # jpa配置
   jpa:
     database: postgresql

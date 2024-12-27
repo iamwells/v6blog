@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 
 import java.time.OffsetDateTime;
 
@@ -22,7 +21,7 @@ public class AuthUser {
 
     @Size(max = 32)
     @NotNull
-    @Column(name = "username", nullable = false, length = 32)
+    @Column(name = "username", nullable = false, unique = true, length = 32)
     private String username;
 
     @Size(max = 60)
@@ -32,7 +31,7 @@ public class AuthUser {
 
     @Size(max = 32)
     @NotNull
-    @Column(name = "nickname", nullable = false, length = 32)
+    @Column(name = "nickname", nullable = false, unique = true, length = 32)
     private String nickname;
 
     @Size(max = 64)
@@ -75,37 +74,40 @@ public class AuthUser {
     private String postalCode;
 
     @Size(max = 15)
-    @Column(name = "mobile_phone", length = 15)
+    @Column(name = "mobile_phone", unique = true, length = 15)
     private String mobilePhone;
 
-    @Size(max = 15)
-    @Column(name = "fixed_phone", length = 15)
-    private String fixedPhone;
-
     @Size(max = 254)
-    @Column(name = "email", length = 254)
+    @Column(name = "email", unique = true, length = 254)
     private String email;
 
     @Size(max = 512)
     @Column(name = "avatar", length = 512)
     private String avatar;
 
-    @NotNull
-    @ColumnDefault("1")
-    @Column(name = "status", nullable = false)
+    @Column(name = "status", nullable = false, insertable = false)
     private Short status;
 
     @Column(name = "last_login")
     private OffsetDateTime lastLogin;
 
-    @NotNull
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "create_time", nullable = false)
+    @Column(name = "create_time", nullable = false, insertable = false, updatable = false)
     private OffsetDateTime createTime;
 
-    @NotNull
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "update_time", nullable = false)
+    @Column(name = "update_time", nullable = false, insertable = false)
     private OffsetDateTime updateTime;
 
+    @PreUpdate
+    public void preUpdate() {
+        if (this.status == null) {
+            this.status = 1;
+        }
+        OffsetDateTime now = OffsetDateTime.now();
+        if (this.updateTime == null) {
+            this.updateTime = now;
+        }
+        if (this.lastLogin == null) {
+            this.lastLogin = now;
+        }
+    }
 }

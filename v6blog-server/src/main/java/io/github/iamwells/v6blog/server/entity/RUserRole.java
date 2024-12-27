@@ -1,7 +1,6 @@
 package io.github.iamwells.v6blog.server.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,11 +15,9 @@ public class RUserRole {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @NotNull
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @NotNull
     @Column(name = "role_id", nullable = false)
     private Long roleId;
 

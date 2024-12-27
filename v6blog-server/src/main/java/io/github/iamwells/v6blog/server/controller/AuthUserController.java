@@ -7,6 +7,7 @@ import cn.dev33.satoken.config.SaTokenConfig;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaResult;
 import io.github.iamwells.v6blog.server.dto.AuthUserLoginDTO;
+import io.github.iamwells.v6blog.server.dto.AuthUserRegisterDTO;
 import io.github.iamwells.v6blog.server.service.AuthUserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,10 +16,7 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 
@@ -32,6 +30,23 @@ public class AuthUserController {
 
     @Autowired
     private AuthUserService authUserService;
+
+    /**
+     * 处理用户注册请求
+     *
+     * @param dto 经过验证的用户注册数据传输对象，确保数据有效性
+     * @return 返回用户注册的结果，包括用户ID
+     */
+    @PutMapping("/register")
+    public SaResult register(@Valid @NotNull @RequestBody AuthUserRegisterDTO dto) {
+        // 调用业务服务方法执行用户注册
+        String id = authUserService.doRegister(dto);
+        // 创建一个数据容器来存储用户ID
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("id", id);
+        // 返回成功结果，包含用户ID
+        return SaResult.ok().setData(data);
+    }
 
     /**
      * 用户登录
@@ -104,6 +119,19 @@ public class AuthUserController {
         cookie.setMaxAge(0);
         // 将Cookie添加到响应中
         response.addCookie(cookie);
+    }
+
+    @GetMapping("")
+    @SaCheckLogin
+    public SaResult getUserInfo() {
+        // 获取当前登录用户的ID
+        Object loginId = StpUtil.getLoginId();
+        // 创建一个HashMap来存储用户信息
+        HashMap<String, Object> result = new HashMap<>();
+        // 将用户ID添加到结果中
+        result.put("id", loginId);
+        // 返回包含用户信息的SaResult对象
+        return SaResult.data(result);
     }
 
 

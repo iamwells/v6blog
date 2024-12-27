@@ -6,10 +6,12 @@ import cn.dev33.satoken.stp.StpUtil;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.github.iamwells.v6blog.server.dto.AuthUserLoginDTO;
+import io.github.iamwells.v6blog.server.dto.AuthUserRegisterDTO;
 import io.github.iamwells.v6blog.server.entity.AuthUser;
 import io.github.iamwells.v6blog.server.entity.QAuthUser;
 import io.github.iamwells.v6blog.server.repository.AuthUserRepository;
 import io.github.iamwells.v6blog.server.service.AuthUserService;
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,5 +42,15 @@ public class AuthUserServiceImpl implements AuthUserService {
         } else {
             throw new RuntimeException("密码错误！");
         }
+    }
+
+    @Autowired
+    private EntityManager entityManager;
+
+    @Override
+    public String doRegister(AuthUserRegisterDTO dto) {
+        AuthUser user = dto.toAuthUser();
+        AuthUser save = authUserRepository.save(user);
+        return save.getId().toString();
     }
 }

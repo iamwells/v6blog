@@ -1,7 +1,6 @@
 package io.github.iamwells.v6blog.server.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +17,6 @@ public class AuthRole {
     private Long id;
 
     @Size(max = 32)
-    @NotNull
     @Column(name = "code", nullable = false, length = 32)
     private String code;
 
