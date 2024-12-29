@@ -2,6 +2,8 @@ package io.github.iamwells.v6blog.server.service;
 
 import io.github.iamwells.v6blog.server.dto.AuthUserLoginDTO;
 import io.github.iamwells.v6blog.server.dto.AuthUserRegisterDTO;
+import io.github.iamwells.v6blog.server.dto.AuthUserUpdateDTO;
+import io.github.iamwells.v6blog.server.entity.AuthUser;
 
 
 /**
@@ -25,4 +27,32 @@ public interface AuthUserService {
      * @return
      */
     String doRegister(AuthUserRegisterDTO dto);
+
+    /**
+     * 执行用户注销操作
+     *
+     * @param loginId 用户登录标识，用于标识当前用户
+     */
+    void doDelete(Object loginId);
+
+    /**
+     * 更新用户信息的方法
+     * 此方法通过接收一个包含用户更新信息的数据传输对象来更新用户信息
+     * 主要用于处理用户信息的更新操作，如修改用户名、密码、邮箱等
+     *
+     * @param loginId 用户登录标识，用于标识当前用户
+     * @param dto     包含用户更新信息的数据传输对象，用于指定要更新的用户信息
+     * @return
+     */
+    AuthUser doUpdate(Object loginId, AuthUserUpdateDTO dto);
+
+    /**
+     * 获取用户信息的方法
+     * 此方法通过接收一个用户登录标识来获取用户信息
+     * 主要用于获取用户信息，如用户名、密码、邮箱等
+     *
+     * @param loginId 用户登录标识，用于标识当前用户
+     * @return 包含用户信息的实体对象，用于返回用户信息
+     */
+    AuthUser doGetUserInfo(Object loginId);
 }

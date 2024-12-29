@@ -8,6 +8,8 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaResult;
 import io.github.iamwells.v6blog.server.dto.AuthUserLoginDTO;
 import io.github.iamwells.v6blog.server.dto.AuthUserRegisterDTO;
+import io.github.iamwells.v6blog.server.dto.AuthUserUpdateDTO;
+import io.github.iamwells.v6blog.server.entity.AuthUser;
 import io.github.iamwells.v6blog.server.service.AuthUserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -37,7 +39,7 @@ public class AuthUserController {
      * @param dto 经过验证的用户注册数据传输对象，确保数据有效性
      * @return 返回用户注册的结果，包括用户ID
      */
-    @PutMapping("/register")
+    @PostMapping("/register")
     public SaResult register(@Valid @NotNull @RequestBody AuthUserRegisterDTO dto) {
         // 调用业务服务方法执行用户注册
         String id = authUserService.doRegister(dto);
@@ -46,6 +48,43 @@ public class AuthUserController {
         data.put("id", id);
         // 返回成功结果，包含用户ID
         return SaResult.ok().setData(data);
+    }
+
+    /**
+     * 处理用户删除请求的控制器方法
+     * 该方法用于注销当前登录用户，并执行用户数据的删除操作
+     */
+    @DeleteMapping("")
+    @SaCheckLogin
+    public SaResult delete(HttpServletResponse response) {
+        // 获取当前登录用户的ID
+        Object loginId = StpUtil.getLoginId();
+        // 执行删除操作，清除用户在当前设备上的登录状态
+        StpUtil.logout(loginId);
+        // 删除Cookie
+        deleteCookie(response);
+        // 调用业务服务方法执行用户删除操作
+        authUserService.doDelete(loginId);
+        // 返回成功结果
+        return SaResult.ok();
+    }
+
+    /**
+     * 处理用户更新请求的控制器方法
+     * 该方法用于更新当前登录用户的信息
+     *
+     * @param dto 经过验证且非空的用户更新数据，通过请求体传递
+     * @return 更新操作的结果，由SaResult封装
+     */
+    @PutMapping("")
+    @SaCheckLogin
+    public SaResult update(@Valid @NotNull @RequestBody AuthUserUpdateDTO dto) {
+        // 获取当前登录用户的ID
+        Object loginId = StpUtil.getLoginId();
+        // 调用业务服务方法执行用户更新操作
+        authUserService.doUpdate(loginId, dto);
+        // 返回成功结果
+        return SaResult.ok();
     }
 
     /**
@@ -123,15 +162,13 @@ public class AuthUserController {
 
     @GetMapping("")
     @SaCheckLogin
-    public SaResult getUserInfo() {
+    public SaResult getInfo() {
         // 获取当前登录用户的ID
         Object loginId = StpUtil.getLoginId();
-        // 创建一个HashMap来存储用户信息
-        HashMap<String, Object> result = new HashMap<>();
-        // 将用户ID添加到结果中
-        result.put("id", loginId);
+        // 调用业务服务方法获取用户信息
+        AuthUser user = authUserService.doGetUserInfo(loginId);
         // 返回包含用户信息的SaResult对象
-        return SaResult.data(result);
+        return SaResult.data(user);
     }
 
 

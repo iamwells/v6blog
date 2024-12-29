@@ -57,7 +57,6 @@ spring:
           max-active: 5
           max-idle: 5
           min-idle: 2
-
   # jpa配置
   jpa:
     database: postgresql
@@ -68,7 +67,11 @@ spring:
     properties:
       hibernate:
         format_sql: true
-
   # json配置
   jackson:
     default-property-inclusion: non_null
+  # 缓存配置
+  cache:
+    type: redis
+    cache-names:
+      - user
