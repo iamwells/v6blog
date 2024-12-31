@@ -171,5 +171,17 @@ public class AuthUserController {
         return SaResult.data(user);
     }
 
+    @GetMapping("")
+    @SaCheckLogin
+    public SaResult getPermissions() {
+        // 获取当前登录用户的ID
+        Object loginId = StpUtil.getLoginId();
+        // 调用业务服务方法获取用户信息
+        AuthUser user = authUserService.doGetUserInfo(loginId);
+        StpUtil.set
+        // 返回包含用户信息的SaResult对象
+        return SaResult.data(user);
+    }
+
 
 }

@@ -30,8 +30,6 @@ sa-token:
         max-active: 5
         max-idle: 5
         min-idle: 2
-
-
 spring:
   # 数据源
   datasource:
