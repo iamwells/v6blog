@@ -4,6 +4,7 @@ import cn.dev33.satoken.exception.SaTokenException;
 import cn.dev33.satoken.util.SaResult;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -32,11 +33,15 @@ public class GlobalExceptionHandler {
         // 遍历所有错误信息
         ex.getBindingResult().getAllErrors().forEach((error) -> {
             // 获取错误信息对应的字段名
-            String fieldName = ((FieldError) error).getField();
-            // 获取错误信息
-            String errorMessage = error.getDefaultMessage();
-            // 将字段名和错误信息存入映射表中
-            errors.put(fieldName, errorMessage);
+            if (error instanceof FieldError) {
+                String fieldName = ((FieldError) error).getField();
+                // 获取错误信息
+                String errorMessage = error.getDefaultMessage();
+                // 将字段名和错误信息存入映射表中
+                errors.put(fieldName, errorMessage);
+            } else if (error instanceof ObjectError) {
+                errors.put(error.getObjectName(), error.getDefaultMessage());
+            }
         });
         // 返回包含所有错误信息的响应实体，并设置HTTP状态码为400
         return SaResult.error(errors.values().toString()).setCode(HttpStatus.BAD_REQUEST.value());

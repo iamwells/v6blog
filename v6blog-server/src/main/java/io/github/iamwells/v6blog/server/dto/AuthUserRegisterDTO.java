@@ -1,6 +1,7 @@
 package io.github.iamwells.v6blog.server.dto;
 
 import cn.dev33.satoken.secure.BCrypt;
+import io.github.iamwells.v6blog.server.anno.PhoneNumber;
 import io.github.iamwells.v6blog.server.entity.AuthUser;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
@@ -12,6 +13,7 @@ import java.io.Serializable;
 /**
  * DTO for {@link io.github.iamwells.v6blog.server.entity.AuthUser}
  */
+@PhoneNumber(message = "手机号码格式不正确")
 public record AuthUserRegisterDTO(
         @Size(message = "用户名长度为2-32位！", min = 2, max = 32) @NotBlank(message = "用户名不能为空！") String username,
         @Size(message = "密码长度为6-32位！", min = 6, max = 32) @NotBlank(message = "密码不能为空！") String password,
