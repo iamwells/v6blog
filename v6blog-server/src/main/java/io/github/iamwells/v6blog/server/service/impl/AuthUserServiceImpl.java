@@ -1,5 +1,6 @@
 package io.github.iamwells.v6blog.server.service.impl;
 
+import cn.dev33.satoken.SaManager;
 import cn.dev33.satoken.secure.BCrypt;
 import cn.dev33.satoken.stp.SaLoginModel;
 import cn.dev33.satoken.stp.StpUtil;
@@ -11,7 +12,9 @@ import io.github.iamwells.v6blog.server.dto.AuthUserLoginDTO;
 import io.github.iamwells.v6blog.server.dto.AuthUserRegisterDTO;
 import io.github.iamwells.v6blog.server.dto.AuthUserUpdateDTO;
 import io.github.iamwells.v6blog.server.entity.AuthUser;
+import io.github.iamwells.v6blog.server.entity.QAuthRole;
 import io.github.iamwells.v6blog.server.entity.QAuthUser;
+import io.github.iamwells.v6blog.server.entity.QRUserRole;
 import io.github.iamwells.v6blog.server.repository.AuthUserRepository;
 import io.github.iamwells.v6blog.server.service.AuthUserService;
 import jakarta.persistence.EntityNotFoundException;
@@ -21,6 +24,10 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Transactional
@@ -61,7 +68,7 @@ public class AuthUserServiceImpl implements AuthUserService {
     @CacheEvict(value = "user", keyGenerator = "userLoginIdKeyGenerator")
     public void doDelete(Object loginId) {
         if (loginId == null) {
-            throw new RuntimeException("未找到当前用户登录id！请联系管理员处理！");
+            loginId = StpUtil.getLoginId();
         }
         authUserRepository.deleteById((Long) loginId);
     }
@@ -70,7 +77,7 @@ public class AuthUserServiceImpl implements AuthUserService {
     @CachePut(value = "user", keyGenerator = "userLoginIdKeyGenerator")
     public AuthUser doUpdate(Object loginId, AuthUserUpdateDTO dto) {
         if (loginId == null) {
-            throw new RuntimeException("未找到当前用户登录id！请联系管理员处理！");
+            loginId = StpUtil.getLoginId();
         }
         AuthUser authUser = dto.toAuthUser();
         AuthUser bean = authUserRepository.findById(Long.valueOf(loginId.toString())).orElseThrow(
@@ -84,9 +91,42 @@ public class AuthUserServiceImpl implements AuthUserService {
     @Override
     @Cacheable(value = "user", keyGenerator = "userLoginIdKeyGenerator")
     public AuthUser doGetUserInfo(Object loginId) {
+        if (loginId == null) {
+            loginId = StpUtil.getLoginId();
+        }
         AuthUser bean = authUserRepository.findById(Long.valueOf(loginId.toString())).orElseThrow(
                 () -> new EntityNotFoundException("用户不存在！")
         );
         return bean;
+    }
+
+    @Override
+    public List<String> doGetRoleList(Object loginId, boolean ifUpdateCache) {
+        List<String> roleList = new ArrayList<>();
+        if (!ifUpdateCache) {
+            roleList = (List<String>) SaManager.getSaTokenDao().getObject(StpUtil.getTokenName() + ":authorize:user-roles:" + loginId);
+        }
+        if (ObjectUtils.isEmpty(roleList)) {
+            QAuthRole authRole = QAuthRole.authRole;
+            QRUserRole rUserRole = QRUserRole.rUserRole;
+            QAuthUser authUser = QAuthUser.authUser;
+            if (loginId != null) {
+                Long id = Long.parseLong(loginId.toString());
+                roleList = jpaQueryFactory.select(authRole.code)
+                        .from(authUser)
+                        .innerJoin(rUserRole).on(rUserRole.userId.eq(authUser.id))
+                        .innerJoin(authRole).on(rUserRole.roleId.eq(authRole.id))
+                        .where(authUser.id.eq(id))
+                        .fetch();
+                SaManager.getSaTokenDao().setObject(StpUtil.getTokenName() + ":authorize:user-roles:" + loginId, roleList, 60 * 60 * 24 * 15);
+            }
+        }
+        return roleList;
+    }
+
+    @Override
+    public List<String> doGetPermissionList(Object loginId, boolean ifUpdateCache) {
+
+        return List.of();
     }
 }

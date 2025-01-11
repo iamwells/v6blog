@@ -5,6 +5,8 @@ import io.github.iamwells.v6blog.server.dto.AuthUserRegisterDTO;
 import io.github.iamwells.v6blog.server.dto.AuthUserUpdateDTO;
 import io.github.iamwells.v6blog.server.entity.AuthUser;
 
+import java.util.List;
+
 
 /**
  * 认证用户服务接口
@@ -55,4 +57,9 @@ public interface AuthUserService {
      * @return 包含用户信息的实体对象，用于返回用户信息
      */
     AuthUser doGetUserInfo(Object loginId);
+
+
+    List<String> doGetRoleList(Object loginId, boolean ifUpdateCache);
+
+    List<String> doGetPermissionList(Object loginId, boolean ifUpdateCache);
 }
