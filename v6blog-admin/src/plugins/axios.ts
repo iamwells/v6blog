@@ -13,7 +13,7 @@ const instance: AxiosInstance = axios.create({
   transformResponse: [(data) => {
     // 使用 json-bigint 解析响应数据
     try {
-      return JSONBig.parse(data);
+      ret                                                                                                                                                              urn JSONBig.parse(data);
     } catch (error) {
       return data;
     }
