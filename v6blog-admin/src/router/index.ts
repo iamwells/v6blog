@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import DashboardView from '@/views/DashboardView.vue'
-import AuthView from '@/views/AuthView.vue'
+import AdminLayout from '@/layouts/admin/AdminLayout.vue'
+import AuthLayout from '@/layouts/auth/AuthLayout.vue'
 
 import nProgress from '@/utils/nprogress'
 
@@ -8,10 +8,13 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '',
-      name: 'dashboard',
-      component: DashboardView,
-      redirect: 'overview',
+      path: '/',
+      redirect: '/admin',
+    },
+    {
+      path: '/admin',
+      component: AdminLayout,
+      redirect: '/admin/overview',
       children: [
         {
           path: 'overview',
@@ -22,14 +25,29 @@ const router = createRouter({
     },
     {
       path: '/auth',
-      name: 'auth',
-      component: AuthView,
+      component: AuthLayout,
+      redirect: '/auth/login',
+      children: [
+        {
+          path: 'login',
+          name: 'login',
+          component: () => import('@/views/auth/LoginView.vue'),
+        },
+      ],
     },
   ],
 })
 
 router.beforeEach((to, from, next) => {
   nProgress.start()
+  console.log('to', to)
+  if (to.fullPath.includes('/admin')) {
+    const token = localStorage.getItem('token')
+    if (!token) {
+      next('/auth/login')
+      return
+    }
+  }
   next()
 })
 
