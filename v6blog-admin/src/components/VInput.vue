@@ -1,67 +1,35 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, defineModel } from 'vue'
+import { Icon } from "@iconify/vue"
 
-const props = defineProps({
-  class: {
-    type: String,
-  },
-  width: {
-    type: String,
-  },
-  height: {
-    type: String,
-  },
-  type: {
-    type: String,
-    default: 'text',
-  },
-  value: {
-    type: String,
-  },
-  placeholder: {
-    type: String,
-  },
-  title: {
-    type: String,
-  },
-  readonly: {
-    type: Boolean,
-  },
-  minlength: {
-    type: Number,
-  },
-  maxlength: {
-    type: Number,
-  },
-  min: {
-    type: Number,
-  },
-  max: {
-    type: Number,
-  },
-  icon: {
-    type: String,
-  },
-  iconSize: {
-    type: String,
-  },
-  ifValid: {
-    type: Boolean,
-  },
-  required: {
-    type: Boolean,
-  },
-  pattern: {
-    type: String,
-  },
-  validatorHint: {
-    type: String,
-  },
-})
+import { defineProps } from 'vue'
 
-const iconName = computed(() => {
-  return props.icon ? `icon-[${props.icon.replace(':', '--')}]` : props.icon
-})
+import { useField } from 'vee-validate'
+
+interface Props {
+  name: string
+  class?: string
+  width?: string
+  height?: string
+  type?: 'text' | 'password' | 'email' | 'number'
+  placeholder?: string
+  title?: string
+  readonly?: boolean
+  minlength?: number
+  maxlength?: number
+  min?: number
+  max?: number
+  icon?: string
+  iconSize?: string
+  ifValid?: boolean
+  required?: boolean
+  pattern?: string
+}
+
+const props = defineProps<Props>()
+
+
+const { value, errors } = useField(() => props.name, undefined)
 </script>
 
 <template>
@@ -71,10 +39,10 @@ const iconName = computed(() => {
       :class="[ifValid && 'validator', props.class]"
       :style="{ width: width, height: height }"
     >
-      <span v-if="icon" :class="iconName" :style="{ width: iconSize, height: iconSize }"></span>
+      <Icon v-if="icon" :icon="icon" :width="iconSize" :height="iconSize" />
       <input
         :type="type"
-        :value="value"
+        v-model="value"
         :placeholder="placeholder"
         :title="title"
         :required="required"
@@ -86,7 +54,7 @@ const iconName = computed(() => {
         :readonly="readonly"
       />
     </label>
-    <p v-if="ifValid && validatorHint" class="validator-hint">{{ validatorHint }}</p>
+    <p v-if="errors && errors.length" class="validator-hint">{{ errors }}</p>
   </div>
 </template>
 

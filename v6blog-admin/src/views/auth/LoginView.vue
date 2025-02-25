@@ -1,10 +1,25 @@
 <script setup lang="ts">
 import VInput from '@/components/VInput.vue'
-import { ref } from 'vue'
+import { reactive, ref } from 'vue'
+import { useForm } from 'vee-validate'
+import * as z from 'zod'
+import { toTypedSchema } from '@vee-validate/zod'
 
 const formRef = ref(null)
+// const username = ref('123')
+const { handleSubmit, values, errors } = useForm({
+  validationSchema: toTypedSchema(
+    z.object({
+      username: z.string().nonempty('username is required').min(3, 'at least 3').max(50, 'max 50'),
+      password: z.string().nonempty('password is required').min(6, 'at least 6').max(50, 'max 50'),
+    }),
+  ),
+  initialValues: {
+    username: '123',
+  },
+})
 const onSubmit = () => {
-  console.log('onSubmit', (formRef.value as unknown as HTMLFormElement))
+  console.log('onSubmit', formRef.value as unknown as HTMLFormElement)
 }
 </script>
 
@@ -23,21 +38,20 @@ const onSubmit = () => {
       </h1>
       <form class="flex flex-col items-center gap-4" @submit.prevent="onSubmit" ref="formRef">
         <VInput
+          name="username"
           type="text"
           class="input-xl"
           placeholder="用户名"
-          icon="line-md--account"
+          icon="line-md:account"
           icon-size="1.2em"
-          :minlength="2"
-          validatorHint="格式不对！"
-          :if-valid="true"
           width="500px"
           height="80px"
+          isValid="true"
         />
-        <button class="btn" type="submit">Submit form</button>
+        <button class="btn" type="submit" @click="onSubmit">Submit form</button>
       </form>
-
-      <button class="btn" @click="onSubmit">Submit form</button>
+      {{ values }}
+      {{ errors }}
     </div>
   </div>
 </template>
