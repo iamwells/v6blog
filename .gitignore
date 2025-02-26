@@ -4,3 +4,4 @@
 out
 target
 
+v6blog-server/src/main/resources/application-dev.yml
