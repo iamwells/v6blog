@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import { computed, defineModel } from 'vue'
-import { Icon } from "@iconify/vue"
-
-import { defineProps } from 'vue'
+import { Icon } from '@iconify/vue'
 
 import { useField } from 'vee-validate'
+import { onMounted, watch } from 'vue'
 
 interface Props {
   name: string
@@ -25,22 +23,33 @@ interface Props {
   required?: boolean
   pattern?: string
 }
+let ele: HTMLInputElement
+onMounted(() => {
+  ele = document.querySelector(`input[name='${props.name}']`) as HTMLInputElement
+  console.log(ele)
+})
 
 const props = defineProps<Props>()
 
+const { value, errorMessage } = useField(() => props.name, undefined)
 
-const { value, errors } = useField(() => props.name, undefined)
+watch(errorMessage, () => {
+  console.error(errorMessage.value)
+  if (errorMessage.value) {
+    ele.setCustomValidity(errorMessage.value)
+  }else{
+    ele.setCustomValidity('')
+  }
+})
 </script>
 
 <template>
   <div>
-    <label
-      class="input"
-      :class="[ifValid && 'validator', props.class]"
-      :style="{ width: width, height: height }"
-    >
+    <label class="input validator" :class="[props.class]" :style="{ width: width, height: height }">
       <Icon v-if="icon" :icon="icon" :width="iconSize" :height="iconSize" />
       <input
+        :id="name"
+        :name="name"
         :type="type"
         v-model="value"
         :placeholder="placeholder"
@@ -54,7 +63,7 @@ const { value, errors } = useField(() => props.name, undefined)
         :readonly="readonly"
       />
     </label>
-    <p v-if="errors && errors.length" class="validator-hint">{{ errors }}</p>
+    <p v-if="errorMessage" class="validator-hint">{{ errorMessage }}</p>
   </div>
 </template>
 
