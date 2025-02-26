@@ -14,6 +14,7 @@ const { handleSubmit, values, errors } = useForm({
       password: z.string().nonempty('password is required').min(6, 'at least 6').max(50, 'max 50'),
     }),
   ),
+  validateOnMount: true,
 })
 const onSubmit = () => {
   console.log('onSubmit', formRef.value as unknown as HTMLFormElement)
@@ -29,7 +30,7 @@ const onSubmit = () => {
       />
     </figure>
     <div class="card-body flex-3 flex justify-center">
-      <h1 class="card-title flex justify-center ">
+      <h1 class="card-title flex justify-center">
         v6blog Admin
         <span class="badge badge-primary">登录</span>
       </h1>
