@@ -17,41 +17,64 @@ interface Props {
   icon?: string
   iconSize?: string
 }
+
+const props = defineProps<Props>()
+
 let ele: HTMLInputElement
 onMounted(() => {
   ele = document.querySelector(`input[name='${props.name}']`) as HTMLInputElement
 })
 
-const props = defineProps<Props>()
+function useBase() {
+  const { value, errorMessage } = useField(() => props.name, undefined)
 
-const { value, errorMessage } = useField(() => props.name, undefined)
+  watch(errorMessage, () => {
+    console.error(errorMessage.value)
+    if (errorMessage.value) {
+      ele.setCustomValidity(errorMessage.value)
+    } else {
+      ele.setCustomValidity('')
+    }
+  })
 
-watch(errorMessage, () => {
-  console.error(errorMessage.value)
-  if (errorMessage.value) {
-    ele.setCustomValidity(errorMessage.value)
-  } else {
-    ele.setCustomValidity('')
-  }
-})
+  const localType = ref<InputTypeHTMLAttribute>()
 
-const passwordVisible = ref(false)
-const localType = ref<InputTypeHTMLAttribute>()
+  const realType = computed(() => {
+    return localType.value || props.type
+  })
 
-const togglePasswordVisible = () => {
-  passwordVisible.value = !passwordVisible.value
-  console.log(passwordVisible.value)
-
-  if (passwordVisible.value) {
-    localType.value = 'text'
-  } else {
-    localType.value = 'password'
+  return {
+    props,
+    value,
+    errorMessage,
+    localType,
+    realType,
   }
 }
 
-const realType = computed(() => {
-  return localType.value || props.type
-})
+function usePassword() {
+  const passwordVisible = ref(false)
+
+  const togglePasswordVisible = () => {
+    passwordVisible.value = !passwordVisible.value
+    console.log(passwordVisible.value)
+
+    if (passwordVisible.value) {
+      localType.value = 'text'
+    } else {
+      localType.value = 'password'
+    }
+  }
+
+  return {
+    passwordVisible,
+    togglePasswordVisible,
+  }
+}
+
+const { value, errorMessage, localType, realType } = useBase()
+
+const { passwordVisible, togglePasswordVisible } = usePassword()
 </script>
 
 <template>
