@@ -43,10 +43,6 @@ const onSubmit = () => {
           class="input-xl"
           placeholder="用户名"
           icon="line-md:account"
-          icon-size="1.2em"
-          width="500px"
-          height="80px"
-          isValid="true"
         />
         <button class="btn" type="submit" @click="onSubmit">Submit form</button>
       </form>

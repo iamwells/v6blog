@@ -2,26 +2,20 @@
 import { Icon } from '@iconify/vue'
 
 import { useField } from 'vee-validate'
-import { onMounted, watch } from 'vue'
+import { onMounted, watch, type InputTypeHTMLAttribute } from 'vue'
 
 interface Props {
+  id?: string
   name: string
   class?: string
   width?: string
   height?: string
-  type?: 'text' | 'password' | 'email' | 'number'
+  type?: InputTypeHTMLAttribute
   placeholder?: string
   title?: string
   readonly?: boolean
-  minlength?: number
-  maxlength?: number
-  min?: number
-  max?: number
   icon?: string
   iconSize?: string
-  ifValid?: boolean
-  required?: boolean
-  pattern?: string
 }
 let ele: HTMLInputElement
 onMounted(() => {
@@ -37,7 +31,7 @@ watch(errorMessage, () => {
   console.error(errorMessage.value)
   if (errorMessage.value) {
     ele.setCustomValidity(errorMessage.value)
-  }else{
+  } else {
     ele.setCustomValidity('')
   }
 })
@@ -48,18 +42,12 @@ watch(errorMessage, () => {
     <label class="input validator" :class="[props.class]" :style="{ width: width, height: height }">
       <Icon v-if="icon" :icon="icon" :width="iconSize" :height="iconSize" />
       <input
-        :id="name"
+        :id="id || name"
         :name="name"
         :type="type"
         v-model="value"
         :placeholder="placeholder"
         :title="title"
-        :required="required"
-        :minlength="minlength"
-        :maxlength="maxlength"
-        :min="min"
-        :max="max"
-        :pattern="pattern"
         :readonly="readonly"
       />
     </label>
