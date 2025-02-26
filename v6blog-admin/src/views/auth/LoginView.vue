@@ -16,9 +16,6 @@ const { handleSubmit, values, errors } = useForm({
   ),
   validateOnMount: true,
 })
-const onSubmit = () => {
-  console.log('onSubmit', formRef.value as unknown as HTMLFormElement)
-}
 </script>
 
 <template>
@@ -34,7 +31,7 @@ const onSubmit = () => {
         v6blog Admin
         <span class="badge badge-primary">登录</span>
       </h1>
-      <form class="flex flex-col items-center gap-4" @submit.prevent="onSubmit" ref="formRef">
+      <form class="flex flex-col items-center gap-4" ref="formRef">
         <VInput
           name="username"
           type="text"
@@ -50,7 +47,7 @@ const onSubmit = () => {
           placeholder="密码"
           icon="ant-design:lock-outlined"
         />
-        <button class="btn" type="submit" @click="onSubmit">Submit form</button>
+        <button class="btn" type="submit">Submit form</button>
       </form>
       {{ values }}
       {{ errors }}
