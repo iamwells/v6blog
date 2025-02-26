@@ -1,6 +1,6 @@
 server:
   # 端口
-  port: 8081
+  port: 8080
 
 ############## Sa-Token 配置 (文档: https://sa-token.cc) ##############
 sa-token:
@@ -20,10 +20,10 @@ sa-token:
   is-log: true
   # Sa-Token redis 配置
   alone-redis:
-    host:
+    host: localhost
     port: 6379
     username: v6blog
-    password:
+    password: v6blogWzw199887@@
     database: 0
     lettuce:
       pool:
@@ -34,9 +34,9 @@ spring:
   # 数据源
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://xxxx:5432/v6blog
+    url: jdbc:postgresql://localhost:5432/v6blog
     username: v6blog
-    password:
+    password: v6blogWzw199887@@
     # 数据库连接池
     hikari:
       pool-name: v6blog-pool
@@ -45,10 +45,10 @@ spring:
     # 业务redis配置
   data:
     redis:
-      host:
+      host: localhost
       port: 6379
       username: v6blog
-      password:
+      password: v6blogWzw199887@@
       database: 1
       lettuce:
         pool:
