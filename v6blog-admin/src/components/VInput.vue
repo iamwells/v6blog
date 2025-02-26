@@ -2,7 +2,7 @@
 import { Icon } from '@iconify/vue'
 
 import { useField } from 'vee-validate'
-import { onMounted, watch, type InputTypeHTMLAttribute } from 'vue'
+import { computed, onMounted, ref, watch, type InputTypeHTMLAttribute } from 'vue'
 
 interface Props {
   id?: string
@@ -20,7 +20,6 @@ interface Props {
 let ele: HTMLInputElement
 onMounted(() => {
   ele = document.querySelector(`input[name='${props.name}']`) as HTMLInputElement
-  console.log(ele)
 })
 
 const props = defineProps<Props>()
@@ -35,6 +34,24 @@ watch(errorMessage, () => {
     ele.setCustomValidity('')
   }
 })
+
+const passwordVisible = ref(false)
+const localType = ref<InputTypeHTMLAttribute>()
+
+const togglePasswordVisible = () => {
+  passwordVisible.value = !passwordVisible.value
+  console.log(passwordVisible.value)
+
+  if (passwordVisible.value) {
+    localType.value = 'text'
+  } else {
+    localType.value = 'password'
+  }
+}
+
+const realType = computed(() => {
+  return localType.value || props.type
+})
 </script>
 
 <template>
@@ -44,14 +61,23 @@ watch(errorMessage, () => {
       <input
         :id="id || name"
         :name="name"
-        :type="type"
+        :type="realType"
         v-model="value"
         :placeholder="placeholder"
         :title="title"
         :readonly="readonly"
       />
+      <Icon
+        v-if="type === 'password'"
+        :icon="passwordVisible ? 'line-md:watch-loop' : 'line-md:watch-off-loop'"
+        :width="iconSize"
+        :height="iconSize"
+        @click="togglePasswordVisible"
+        class="cursor-pointer"
+      />
+      <Icon v-else icon="" :width="iconSize" :height="iconSize" />
     </label>
-    <p v-if="errorMessage" class="validator-hint">{{ errorMessage }}</p>
+    <p class="validator-hint">{{ errorMessage }}</p>
   </div>
 </template>
 

@@ -14,9 +14,6 @@ const { handleSubmit, values, errors } = useForm({
       password: z.string().nonempty('password is required').min(6, 'at least 6').max(50, 'max 50'),
     }),
   ),
-  initialValues: {
-    username: '123',
-  },
 })
 const onSubmit = () => {
   console.log('onSubmit', formRef.value as unknown as HTMLFormElement)
@@ -31,8 +28,8 @@ const onSubmit = () => {
         alt="Album"
       />
     </figure>
-    <div class="card-body flex-3">
-      <h1 class="card-title flex justify-center">
+    <div class="card-body flex-3 flex justify-center">
+      <h1 class="card-title flex justify-center ">
         v6blog Admin
         <span class="badge badge-primary">登录</span>
       </h1>
@@ -43,6 +40,14 @@ const onSubmit = () => {
           class="input-xl"
           placeholder="用户名"
           icon="line-md:account"
+        />
+
+        <VInput
+          name="password"
+          type="password"
+          class="input-xl"
+          placeholder="密码"
+          icon="ant-design:lock-outlined"
         />
         <button class="btn" type="submit" @click="onSubmit">Submit form</button>
       </form>
