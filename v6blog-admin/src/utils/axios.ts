@@ -40,7 +40,10 @@ instance.interceptors.request.use(
     // 例如添加 token 到 headers
     const token = localStorage.getItem('token')
     if (token) {
+      // 自定义头，名字叫token
+      config.headers.token = token
     }
+
     return config
   },
   (error: AxiosError): Promise<AxiosError> => {
@@ -59,7 +62,8 @@ instance.interceptors.response.use(
   },
   (error: AxiosError): Promise<AxiosError> => {
     // 对响应错误做些什么
-    notification.reject(error.message)
+    const msg = `错误码：${error.code}，消息：${error.message}`
+    notification.reject(msg)
     if (error.response && error.response.status === 401) {
       // 例如处理未授权错误
       console.error('未授权，请重新登录')
