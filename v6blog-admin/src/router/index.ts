@@ -32,6 +32,17 @@ const router = createRouter({
           path: 'login',
           name: 'login',
           component: () => import('@/views/auth/LoginView.vue'),
+          meta: {
+            badge: '登录',
+          },
+        },
+        {
+          path: 'register',
+          name: 'register',
+          component: () => import('@/views/auth/RegisterView.vue'),
+          meta: {
+            badge: '注册',
+          },
         },
       ],
     },

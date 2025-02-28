@@ -3,3 +3,7 @@
 @import 'tailwindcss';
 
 @plugin "daisyui";
+
+#app {
+  @apply w-screen h-screen
+}

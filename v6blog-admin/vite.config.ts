@@ -20,4 +20,13 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
   },
+  server:{
+    proxy: {
+      '/bing': {
+        target: 'https://www.bing.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/bing/, ''),
+      },
+    }
+  }
 })

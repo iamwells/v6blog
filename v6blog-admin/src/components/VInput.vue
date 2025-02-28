@@ -7,6 +7,7 @@ import { computed, onMounted, ref, watch, type InputTypeHTMLAttribute } from 'vu
 interface Props {
   id?: string
   name: string
+  label?: string
   class?: string
   width?: string
   height?: string
@@ -27,7 +28,6 @@ const inputRef = ref<HTMLInputElement>()
 // 在组件挂载时获取 input 元素，
 onMounted(() => {
   const ele = inputRef.value
-
   watch(
     errorMessage,
     () => {
@@ -106,6 +106,7 @@ const { passwordVisible, togglePasswordVisible } = usePassword()
 
 <template>
   <div class="input-container w-xs m-0 p-0">
+    <label v-if="label" :for="name" class="label p-1">{{ label }}</label>
     <!-- 输入框容器 -->
     <label
       class="input validator m-0"
