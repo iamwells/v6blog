@@ -1,69 +1,65 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import AdminLayout from '@/layouts/admin/AdminLayout.vue'
-import AuthLayout from '@/layouts/auth/AuthLayout.vue'
-
-import nProgress from '@/utils/nprogress'
+import SignLayout from '@/layouts/sign/SignLayout.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      redirect: '/admin',
+      redirect: '/admin/dashboard',
     },
     {
       path: '/admin',
       component: AdminLayout,
-      redirect: '/admin/overview',
+      redirect: '/admin/dashboard',
       children: [
         {
-          path: 'overview',
-          name: 'overview',
-          component: () => import('@/views/admin/OverviewView.vue'),
+          path: 'dashboard',
+          name: 'dashboard',
+          component: () => import('@/views/admin/DashBoardView.vue'),
+          meta: {
+            title: '仪表盘 | v6blog admin',
+            menuName: '仪表盘',
+            icon: 'dashboard',
+          },
+        },
+        {
+          path: 'test',
+          name: 'test',
+          component: () => import('@/views/admin/TestView.vue'),
+          meta: {
+            title: '测试 | v6blog admin',
+            menuName: '测试',
+            icon: 'test',
+          },
         },
       ],
     },
     {
-      path: '/auth',
-      component: AuthLayout,
-      redirect: '/auth/login',
+      path: '/sign',
+      component: SignLayout,
+      redirect: '/sign/in',
       children: [
         {
-          path: 'login',
-          name: 'login',
-          component: () => import('@/views/auth/LoginView.vue'),
+          path: 'in',
+          name: 'signin',
+          component: () => import('@/views/sign/SignInView.vue'),
           meta: {
-            badge: '登录',
+            title: '登录 | v6blog admin',
           },
         },
         {
-          path: 'register',
-          name: 'register',
-          component: () => import('@/views/auth/RegisterView.vue'),
+          path: 'up',
+          name: 'signup',
+          component: () => import('@/views/sign/SignUpView.vue'),
           meta: {
-            badge: '注册',
+            title: '注册 | v6blog admin',
           },
         },
       ],
     },
   ],
-})
-
-router.beforeEach((to, from, next) => {
-  nProgress.start()
-  console.log('to', to)
-  if (to.fullPath.includes('/admin')) {
-    const token = localStorage.getItem('token')
-    if (!token) {
-      next('/auth/login')
-      return
-    }
-  }
-  next()
-})
-
-router.afterEach(() => {
-  nProgress.done()
 })
 
 export default router

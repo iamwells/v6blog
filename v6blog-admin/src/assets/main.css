@@ -1,9 +1,2 @@
-@import 'normalize.css';
-@import 'animate.css';
+@import './base.css';
 @import 'tailwindcss';
-
-@plugin "daisyui";
-
-#app {
-  @apply w-screen h-screen
-}
