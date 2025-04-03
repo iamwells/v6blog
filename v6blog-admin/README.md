@@ -38,20 +38,23 @@ pnpm build
 pnpm test:unit
 ```
 
-### Run End-to-End Tests with [Cypress](https://www.cypress.io/)
+### Run End-to-End Tests with [Playwright](https://playwright.dev)
 
 ```sh
-pnpm test:e2e:dev
-```
+# Install browsers for the first run
+npx playwright install
 
-This runs the end-to-end tests against the Vite development server.
-It is much faster than the production build.
-
-But it's still recommended to test the production build with `test:e2e` before deploying (e.g. in CI environments):
-
-```sh
+# When testing on CI, must build the project first
 pnpm build
+
+# Runs the end-to-end tests
 pnpm test:e2e
+# Runs the tests only on Chromium
+pnpm test:e2e --project=chromium
+# Runs the tests of a specific file
+pnpm test:e2e tests/example.spec.ts
+# Runs the tests in debug mode
+pnpm test:e2e --debug
 ```
 
 ### Lint with [ESLint](https://eslint.org/)
