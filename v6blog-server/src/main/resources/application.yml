@@ -1,7 +1,0 @@
-spring:
-  application:
-    name: v6blog-server
-  profiles:
-    active: dev
-
-
