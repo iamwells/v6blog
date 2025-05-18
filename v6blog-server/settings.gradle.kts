@@ -1,4 +1,4 @@
-rootProject.name = "v6blog"
+rootProject.name = "v6blog-server"
 
 pluginManagement {
     repositories {
