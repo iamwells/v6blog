@@ -1,7 +1,0 @@
-# Intellij
-.iml
-.idea
-out
-target
-
-v6blog-server/src/main/resources/application-dev.yml
