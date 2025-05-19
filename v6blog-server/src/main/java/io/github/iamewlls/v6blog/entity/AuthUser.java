@@ -47,30 +47,6 @@ public class AuthUser {
     @Column(name = "gender")
     private Short gender;
 
-    @Size(max = 3)
-    @Column(name = "nationality", length = 3)
-    private String nationality;
-
-    @Size(max = 2)
-    @Column(name = "ethnicity", length = 2)
-    private String ethnicity;
-
-    @Size(max = 3)
-    @Column(name = "country", length = 3)
-    private String country;
-
-    @Size(max = 255)
-    @Column(name = "province")
-    private String province;
-
-    @Size(max = 255)
-    @Column(name = "state")
-    private String state;
-
-    @Size(max = 255)
-    @Column(name = "city")
-    private String city;
-
     @Size(max = 255)
     @Column(name = "address")
     private String address;
