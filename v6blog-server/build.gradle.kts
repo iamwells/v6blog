@@ -13,10 +13,14 @@ java {
     }
 }
 
-configurations {
-    compileOnly {
-        extendsFrom(configurations.annotationProcessor.get())
-    }
+
+configurations.compileOnly {
+    extendsFrom(configurations.annotationProcessor.get())
+}
+
+
+configurations.configureEach {
+    exclude("org.springframework.boot", "spring-boot-starter-logging")
 }
 
 repositories {
@@ -41,6 +45,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.kafka:spring-kafka")
     implementation("org.springframework.boot:spring-boot-starter-websocket")
+    implementation("org.springframework.boot:spring-boot-starter-log4j2")
+    implementation("com.lmax:disruptor:4.0.0")
     compileOnly("org.projectlombok:lombok")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("org.postgresql:postgresql")
@@ -49,6 +55,10 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.kafka:spring-kafka-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+//    configurations.all {
+//        exclude("org.springframework.boot", "spring-boot-starter-logging")
+//    }
 }
 
 tasks.withType<Test> {

@@ -3,5 +3,7 @@ spring:
     name: v6blog-server
   profiles:
     active: jdbc
-
+  output:
+    ansi:
+      enabled: always
 
