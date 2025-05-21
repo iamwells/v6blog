@@ -1,0 +1,42 @@
+<Configuration status="WARN" monitorInterval="30">
+    <!-- 定义日志格式 -->
+    <Properties>
+
+        <property name="APP_NAME">${spring:spring.application.name}</property>
+        <!-- 控制台日志格式（带颜色） -->
+        <Property name="CONSOLE_PATTERN">%d{ISO8601_OFFSET_DATE_TIME_HHCMM} %5highlight{%level} %style{%pid}{magenta}
+            --- [${APP_NAME}] [%t] %.40logger{1.} : %msg%n
+        </Property>
+        <!-- 文件日志格式（带颜色） -->
+        <Property name="FILE_PATTERN">%d{ISO8601_OFFSET_DATE_TIME_HHCMM} %5highlight{%level}{} %style{%pid}{magenta} ---
+            [${APP_NAME}] [%t] %.40logger{1.} : %msg%n
+        </Property>
+    </Properties>
+
+    <Appenders>
+        <!-- 控制台输出（带颜色） -->
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${CONSOLE_PATTERN}"/>
+        </Console>
+
+        <!-- 文件输出（带颜色） -->
+        <RollingFile name="File" fileName="v6blog_logs/app.log"
+                     filePattern="v6blog_logs/history/app-%d{yyyy-MM-dd}.log">
+            <PatternLayout pattern="${FILE_PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+            <!-- 可选：调整缓冲区大小和刷新策略 -->
+            <BufferSize>8192</BufferSize>
+            <ImmediateFlush>false</ImmediateFlush>
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <!-- 根日志器（改为异步） -->
+        <AsyncRoot level="INFO">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="File"/>
+        </AsyncRoot>
+    </Loggers>
+</Configuration>
